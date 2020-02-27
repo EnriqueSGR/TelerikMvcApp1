@@ -1,0 +1,37 @@
+﻿
+@(Html.Kendo().Grid<TelerikMvcApp1.Product>()
+      .Name("grid")
+      .Columns(columns =>
+      {
+        columns.Bound(c => c.ProductName);
+        columns.Bound(c => c.QuantityPerUnit);
+        columns.Bound(c => c.UnitPrice);
+        columns.Bound(c => c.UnitsInStock);
+        columns.Bound(c => c.UnitsOnOrder);
+        columns.Bound(c => c.ReorderLevel);
+        columns.Bound(c => c.Discontinued);
+        columns.Command(command => { command.Edit(); command.Destroy(); }).Width(180);
+      })
+      .ToolBar(toolbar => {
+            toolbar.Create();
+            toolbar.Excel();
+            toolbar.Pdf();
+      })
+      .ColumnMenu()
+      .Editable(editable => editable.Mode(GridEditMode.InLine))
+      .Pageable()
+      .Navigatable()
+      .Selectable(selectable => {
+            selectable.Mode(GridSelectionMode.Single);
+            selectable.Type(GridSelectionType.Row);
+      })
+      .Scrollable()
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model => model.Id(p => p.ProductID))
+          .Read(read => read.Action("Products_Read", "Grid"))
+          .Create(create => create.Action("Products_Create", "Grid"))
+          .Update(update => update.Action("Products_Update", "Grid"))
+          .Destroy(destroy => destroy.Action("Products_Destroy", "Grid"))
+      )
+)

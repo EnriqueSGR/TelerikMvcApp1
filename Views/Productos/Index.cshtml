@@ -1,0 +1,102 @@
+﻿
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<br />
+
+
+@*@model IEnumerable<TelerikMvcApp1.Models.modProducto>
+
+    @(Html.Kendo().Grid(Model).Name("Productos")
+
+        .Columns(c =>
+        {
+        c.Bound(p => p.NombreEnProducto);
+        c.Bound(p => p.Supplier.NombreEnSupplier).Title("SUPPLIER");
+        c.Bound(p => p.Categoria.NombreEnCategoria).Title("CATEGORIA");
+        c.Bound(p => p.UnitPrice).Format("{0:c}");
+        c.Bound(p => p.UnitsInStock);
+        c.Bound(p => p.Discontinued);
+
+        })
+        .DataSource(d => d
+        .Ajax()
+        .ServerOperation(false)
+        .PageSize(5)
+        )
+        .Pageable()
+        .Filterable()
+        .Sortable()
+        .Groupable()
+    )*@
+
+
+@*@using TelerikMvcApp1.Models*@
+
+
+@(Html.Kendo().Grid<TelerikMvcApp1.Models.Product>()
+
+    .Name("Productos")
+    .HtmlAttributes(new { style = "height : 800px; width: 1500px; "})
+    .Columns(c =>
+    {
+        c.Bound(p => p.Name).Width(200);
+        c.Bound(p => p.Supplier).ClientTemplate("#: Supplier.Name #").Title("Supplier");
+        c.Bound(p => p.Category).ClientTemplate("#: Category.Name #").Title("Category");
+        c.Bound(p => p.UnitPrice).Format("{0:c}");
+        c.Bound(p => p.UnitsInStock).Width(100);
+        c.Bound(p => p.Discontinued).Width(100);
+        c.Command(command => { command.Edit(); command.Destroy(); }).Width (200);
+
+    })
+
+    .ToolBar(t => {
+        t.Create();
+        t.Excel();
+        t.Pdf();
+    })
+
+   .ColumnMenu()
+
+    .DataSource(d => d
+        .Ajax()
+        .Read(r => r.Action("Get", "Productos"))
+        .Update(u => u.Action("Update", "Productos"))
+        .Create(u => u.Action("Create", "Productos"))
+        .Destroy(u => u.Action("Delete", "Productos"))
+        .PageSize(10)
+        .Model(m => {
+            m.Id(p => p.Id);
+            m.Field(p => p.Supplier).DefaultValue(
+                ViewData["defaultSupplier"] as TelerikMvcApp1.Models.Supplier);
+            m.Field(p => p.Category).DefaultValue(
+               ViewData["defaultCategory"] as TelerikMvcApp1.Models.Category);
+        })
+    )
+
+
+    .Pageable()
+    .Filterable()
+    .Sortable()
+    .Groupable()
+
+    .Pageable()
+      .Navigatable()
+      .Selectable(selectable => {
+          selectable.Mode(GridSelectionMode.Single);
+          selectable.Type(GridSelectionType.Row);
+      })
+      .Scrollable()
+
+      .Editable(e => e.Mode(GridEditMode.InLine))
+
+)
+
+
+
+
+
+
